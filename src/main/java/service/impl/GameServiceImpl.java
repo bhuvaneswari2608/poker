@@ -60,8 +60,18 @@ public class GameServiceImpl implements GameService {
     @Override
     public Game updateGame(GameDTO gameDTO, UUID id) {
         try {
+
             LinkedList listenerList = new LinkedList();
             Game game = repository.findById(id);
+
+            //player can be removed if he decides to quit during the game
+            if (gameDTO.getGameEvent().contains(GameEvent.PLAYER_REMOVED) && game.getStatus().equals(GameStatus.STARTED)) {
+                game = removePlayerDuringTheGame(gameDTO, game);
+                listenerList.add(GameEvent.PLAYER_REMOVED);
+                listener.notifyGameEvent(id, listenerList);
+                return game;
+            }
+
             if (allowedGameStatusToUpdate.contains(game.getStatus())) {
                 if (gameDTO.getPlayers() != null && !gameDTO.getPlayers().isEmpty()) {
                     List<Player> players = gameDTO.getPlayers().stream()
@@ -77,7 +87,7 @@ public class GameServiceImpl implements GameService {
                 int number_of_card_to_player = gameDTO.getNumberOfCardsPerPlayer() == null ?
                         game.getCardPerPlayer() : gameDTO.getNumberOfCardsPerPlayer();
                 game.setCardPerPlayer(number_of_card_to_player);
-                repository.save(game);
+                repository.update(game);
                 listener.notifyGameEvent(id, listenerList);
                 return game;
             } else {
@@ -87,6 +97,7 @@ public class GameServiceImpl implements GameService {
             throw new GameNotFoundException(e.getMessage());
         }
     }
+
 
     @Override
     public Game dealCards(UUID id) {
@@ -182,6 +193,19 @@ public class GameServiceImpl implements GameService {
                     .sum();
         }
         return 0;
+    }
+
+
+    private Game removePlayerDuringTheGame(GameDTO gameDTO, Game game) {
+        if(gameDTO.getGameEvent().contains(GameEvent.PLAYER_REMOVED) && game.getStatus().equals(GameStatus.STARTED)) {
+            List<UUID> playerToRemove = gameDTO.getPlayers().stream().map(player -> player.getId()).collect(Collectors.toList());
+            List<Player> playerList = game.getPlayers().stream().filter(player -> !playerToRemove.contains(player.getId())).collect(Collectors.toList());
+            game.setPlayers(playerList);
+            repository.update(game);
+            return game;
+        }
+        return game;
+
     }
 
 }
