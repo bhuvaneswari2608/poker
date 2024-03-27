@@ -1,11 +1,14 @@
 package mapper;
 
+import DTO.CardDTO;
 import DTO.GameDTO;
 import DTO.PlayerDTO;
+import entity.Card;
 import entity.Game;
 import entity.GameInfo;
 import entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,6 +24,7 @@ public class GameMapper {
                 .players(playerDTOS)
                 .gameStatus(game.getStatus())
                 .deck(game.getDeck())
+                .unDealtCards(buildCardDTO(game.getUnDealtCards()))
                 .build();
     }
 
@@ -35,6 +39,18 @@ public class GameMapper {
         }
 
         return playerDTO;
+    }
+
+    private static List<CardDTO> buildCardDTO(List<Card> cards) {
+        if (cards == null) {
+            return new ArrayList<>();
+        }
+        List<CardDTO> cardDTOS = cards.stream().map(card -> CardDTO.builder()
+                        .suits(card.getSuits())
+                        .faceValue(card.getValue()).build())
+                .collect(Collectors.toList());
+
+        return cardDTOS;
     }
 
 }

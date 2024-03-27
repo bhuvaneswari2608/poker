@@ -21,6 +21,7 @@ public class GameDTO {
     private GameStatus gameStatus;
     private UUID uuid;
     private GameUpdateEvent gameUpdateEvent;
+    private List<CardDTO> unDealtCards;
 
 
 }

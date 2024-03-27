@@ -1,0 +1,16 @@
+To start the application
+run the main method
+
+REST api details
+Only one Rest API is developed for create/update/delete respectively.
+Appropriate GameStatus has been included when game is created, decked is added and game is deleted
+The changes to the game are tracked by a listener.
+
+Sequence
+create game.(default cards per person is 2 and deck 1)
+update game(If any deck/person).
+dealCards
+delete
+
+Once the game is started, the deck or player cannot be updated.
+The cards are dealt to each player.
