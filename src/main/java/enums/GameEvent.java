@@ -1,0 +1,5 @@
+package enums;
+
+public enum GameEvent {
+    DECK_ADDED, PLAYER_UPDATED, GAME_DELETED, GAME_CREATED, CARD_SHUFFLED, CARD_DEALT;
+}
