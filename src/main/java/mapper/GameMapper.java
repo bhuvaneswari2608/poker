@@ -34,7 +34,8 @@ public class GameMapper {
                 .build();
         if(player.getGameInfos() != null) {
             GameInfo gameInfo = player.getGameInfos().get(0);
-            playerDTO.setCardList(gameInfo.getCardList());
+            List<CardDTO> cardDTOS = buildCardDTO(gameInfo.getCardList());
+            playerDTO.setCardList(cardDTOS);
 
         }
 

@@ -23,7 +23,7 @@ public class PlayerDTO {
 
     private UUID id;
 
-    private List<Card> cardList;
+    private List<CardDTO> cardList;
 
     private PlayerStatus status;
 
